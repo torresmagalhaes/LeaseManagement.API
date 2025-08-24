@@ -18,18 +18,9 @@ namespace LeaseManagement.Domain.Entities
         public DateTime Birthday { get; set; }
 
         [JsonPropertyName("tipo_cnh")]
-        public CNHCategory CNHType { get; set; }
+        public string CNHType { get; set; }
 
         [JsonPropertyName("imagem_cnh")]
-        public Base64StringAttribute CNHPhoto { get; set; }
-    }
-
-    public enum CNHCategory
-    {
-        A,
-        B,
-        C,
-        D,
-        E
+        public Base64StringAttribute? CNHPhoto { get; set; }
     }
 }

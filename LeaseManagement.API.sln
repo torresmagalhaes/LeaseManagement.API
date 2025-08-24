@@ -15,6 +15,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeaseManagement.Infrastruct
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeaseManagement.Infrastructure.MongoDB", "LeaseManagement.MongoDB.Infrastructure\LeaseManagement.Infrastructure.MongoDB.csproj", "{16B78777-4F63-4410-96C5-73D0B9239343}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeaseManagement.Domain.MongoDB", "LeaseManagement.Domain.MongoDB\LeaseManagement.Domain.MongoDB.csproj", "{4A91F29E-65D7-4E00-A6D2-BF298030ED3A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{A6946FF8-EDF3-4D52-9880-672C5428380A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,14 +41,20 @@ Global
 		{16B78777-4F63-4410-96C5-73D0B9239343}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16B78777-4F63-4410-96C5-73D0B9239343}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16B78777-4F63-4410-96C5-73D0B9239343}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A91F29E-65D7-4E00-A6D2-BF298030ED3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A91F29E-65D7-4E00-A6D2-BF298030ED3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A91F29E-65D7-4E00-A6D2-BF298030ED3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A91F29E-65D7-4E00-A6D2-BF298030ED3A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{FC1B2FD5-1DA3-40BB-B674-69E77B5313D1} = {A6946FF8-EDF3-4D52-9880-672C5428380A}
 		{61CF14D8-134A-4885-9BB1-F23EFF56BA02} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{12187FAA-71AC-421E-906B-884E30F492C7} = {C69B4DCB-A079-4D83-9367-23C4CC517F46}
 		{16B78777-4F63-4410-96C5-73D0B9239343} = {C69B4DCB-A079-4D83-9367-23C4CC517F46}
+		{4A91F29E-65D7-4E00-A6D2-BF298030ED3A} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {21C685F8-DCC0-4B17-8649-33C2116E1835}

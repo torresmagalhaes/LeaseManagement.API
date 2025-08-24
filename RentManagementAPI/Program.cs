@@ -1,4 +1,7 @@
+using LeaseManagement.Infrastructure.MongoDB.Data;
+
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddSingleton<MongoDBService>();
 
 // Add services to the container.
 
