@@ -2,7 +2,7 @@
 
 namespace RentManagementAPI.Controllers
 {
-    public class DriverController : Controller
+    public class LeaseController : Controller
     {
         public IActionResult Index()
         {
