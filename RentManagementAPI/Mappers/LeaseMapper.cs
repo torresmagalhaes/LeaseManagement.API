@@ -20,5 +20,18 @@ namespace LeaseManagementAPI.Mappers
 
             return leaseDocument;
         }
+
+        public static Lease DocumentToJsonMapper(LeaseDocument leaseDocument)
+        {
+            return new Lease
+            {
+                DeliveryManId = leaseDocument.DeliveryManId,
+                MotorcycleId = leaseDocument.MotorcycleId,
+                StartDate = leaseDocument.StartDate,
+                EndDate = leaseDocument.EndDate,
+                ExpectedEndDate = leaseDocument.ExpectedEndDate,
+                Plan = leaseDocument.Plan
+            };
+        }
     }
 }

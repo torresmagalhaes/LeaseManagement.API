@@ -17,5 +17,10 @@ namespace LeaseManagement.Infrastructure.MongoDB.Implementation
         {
             _leaseCollection.InsertOne(leaseDocument);
         }
+
+        public LeaseDocument? GetById(string id)
+        {
+            return _leaseCollection.Find(x => x.Identifier == id).FirstOrDefault();
+        }
     }
 }   

@@ -5,6 +5,9 @@ namespace LeaseManagement.Domain.Entities
 {
     public class Lease
     {
+        [JsonPropertyName("identificador")]
+        public string Identifier { get; set; }
+
         [JsonPropertyName("entregador_id")]
         public string DeliveryManId { get; set; }
 
