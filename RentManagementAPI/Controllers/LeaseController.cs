@@ -12,12 +12,12 @@ namespace RentManagementAPI.Controllers
     public class LeaseController : ControllerBase
     {
         private readonly LeaseImplementation _leaseImplementation;
-        private readonly DeliveryManImplementation _deliveryMenImplementation;
+        private readonly DeliveryManImplementation _deliveryManImplementation;
 
         public LeaseController(LeaseImplementation leaseImplementation, DeliveryManImplementation deliveryManImplementation)
         {
             _leaseImplementation = leaseImplementation;
-            _deliveryMenImplementation = deliveryManImplementation;
+            _deliveryManImplementation = deliveryManImplementation;
         }
 
         [HttpPost]
@@ -28,7 +28,7 @@ namespace RentManagementAPI.Controllers
                 if (lease == null)
                     throw new Exception();
 
-                DeliveryManDocument deliveryMan = _deliveryMenImplementation.GetByIdentifier(lease.DeliveryManId);
+                DeliveryManDocument deliveryMan = _deliveryManImplementation.GetByIdentifier(lease.DeliveryManId);
                 APIValidator.ValidateLease(lease, deliveryMan.CNHType);
 
                 var leaseDocument = LeaseMapper.JsonToDocumentMapper(lease);
