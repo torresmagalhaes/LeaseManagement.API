@@ -26,6 +26,22 @@ namespace RentManagementAPI.Controllers
             try
             {
                 APIValidator.ValidateDeliveryManRegister(deliveryMan);
+
+                if (deliveryMan.CNHPhoto != null)
+                {
+                    var base64 = deliveryMan.CNHPhoto.ToString();
+                    if (!string.IsNullOrWhiteSpace(base64))
+                    {
+                        var bytes = Convert.FromBase64String(base64);
+                        var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "cnh_photos");
+                        Directory.CreateDirectory(folderPath);
+                        var filePath = Path.Combine(folderPath, $"{deliveryMan.Identifier}_cnh.jpg");
+                        System.IO.File.WriteAllBytes(filePath, bytes);
+                    }
+                }
+                else 
+                    throw new Exception();
+
                 DeliveryManDocument deliveryManDocument = DeliveryManMapper.JsonToDocumentMapper(deliveryMan);
                 _deliveryManImplementation.InsertDeliveryMan(deliveryManDocument);
 
@@ -38,18 +54,39 @@ namespace RentManagementAPI.Controllers
         }
 
         [HttpPost("/{id}/cnh")]
-        public IActionResult UploadCNHPhoto(string id, [FromBody] CNHPhotoRequest request)
+        public IActionResult UpdateCNHPhoto(string id, [FromBody] CNHPhotoRequest request)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(id) || request == null || string.IsNullOrWhiteSpace(request.imagem_cnh))
+                if (string.IsNullOrWhiteSpace(id) || request == null || string.IsNullOrWhiteSpace(request.CNHPhoto))
                     throw new Exception();
 
                 var deliveryMan = _deliveryManImplementation.GetByIdentifier(id);
                 if (deliveryMan == null)
                     throw new Exception();
 
-                // Atualiza a imagem da CNH
+                var bytes = Convert.FromBase64String(request.CNHPhoto);
+
+                bool isPng = bytes.Length > 8 &&
+                             bytes[0] == 0x89 && bytes[1] == 0x50 && bytes[2] == 0x4E && bytes[3] == 0x47 &&
+                             bytes[4] == 0x0D && bytes[5] == 0x0A && bytes[6] == 0x1A && bytes[7] == 0x0A;
+
+                bool isBmp = bytes.Length > 2 &&
+                             bytes[0] == 0x42 && bytes[1] == 0x4D;
+
+                if (!isPng && !isBmp)
+                    return BadRequest(new { mensagem = "Apenas imagens PNG ou BMP são aceitas." });
+
+                var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "cnh_photos");
+                Directory.CreateDirectory(folderPath);
+
+                var extension = isPng ? "png" : "bmp";
+                var filePath = Path.Combine(folderPath, $"{id}_cnh.{extension}");
+
+                if (System.IO.File.Exists(filePath))
+                    System.IO.File.Delete(filePath);
+
+                System.IO.File.WriteAllBytes(filePath, bytes);
 
                 return StatusCode(201);
             }
@@ -58,10 +95,5 @@ namespace RentManagementAPI.Controllers
                 return BadRequest(new { mensagem = "Dados inválidos" });
             }
         }
-    }
-
-    public class CNHPhotoRequest
-    {
-        public string imagem_cnh { get; set; }
     }
 }

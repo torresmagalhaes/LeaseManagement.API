@@ -17,5 +17,18 @@ namespace LeaseManagementAPI.Mappers
 
             return motorcycleDocument;
         }
+
+        public static Motorcycle DocumentToJsonMapper(MotorcycleDocument motorcycleDocument)
+        {
+            Motorcycle motorcycle = new Motorcycle
+            {
+                Identifier = Guid.NewGuid().ToString(),
+                Model = motorcycleDocument.Model,
+                Year = motorcycleDocument.Year,
+                LicensePlate = motorcycleDocument.LicensePlate,
+            };
+
+            return motorcycle;
+        }
     }
 }
