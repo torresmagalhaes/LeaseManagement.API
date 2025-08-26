@@ -96,7 +96,7 @@ namespace RentManagementAPI.Controllers
                     totalValue = selectedPlan * dailyFee;
                 }
 
-                _deliveryManImplementation.UpdateEndDate(id, request.DevolutionDay);
+                _leaseImplementation.UpdateEndDate(id, request.DevolutionDay);
                 return Ok(new { data_devolucao = request.DevolutionDay, valor_total = totalValue });
             }
             catch (Exception ex)
