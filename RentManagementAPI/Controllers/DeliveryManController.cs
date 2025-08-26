@@ -33,14 +33,33 @@ namespace RentManagementAPI.Controllers
                     if (!string.IsNullOrWhiteSpace(base64))
                     {
                         var bytes = Convert.FromBase64String(base64);
+
+                        bool isJpg = bytes.Length > 3 &&
+                                     bytes[0] == 0xFF && bytes[1] == 0xD8 && bytes[2] == 0xFF;
+                        bool isBmp = bytes.Length > 2 &&
+                                     bytes[0] == 0x42 && bytes[1] == 0x4D;
+
+                        if (!isJpg && !isBmp)
+                            throw new Exception();
+
+                        var extension = isJpg ? "jpg" : "bmp";
                         var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "cnh_photos");
-                        Directory.CreateDirectory(folderPath);
-                        var filePath = Path.Combine(folderPath, $"{deliveryMan.Identifier}_cnh.jpg");
+
+                        if (!Directory.Exists(folderPath))
+                            Directory.CreateDirectory(folderPath);
+
+                        var filePath = Path.Combine(folderPath, $"{deliveryMan.Identifier}_cnh.{extension}");
                         System.IO.File.WriteAllBytes(filePath, bytes);
                     }
+                    else
+                    {
+                        throw new Exception();
+                    }
                 }
-                else 
+                else
+                {
                     throw new Exception();
+                }
 
                 DeliveryManDocument deliveryManDocument = DeliveryManMapper.JsonToDocumentMapper(deliveryMan);
                 _deliveryManImplementation.InsertDeliveryMan(deliveryManDocument);
@@ -49,7 +68,7 @@ namespace RentManagementAPI.Controllers
             }
             catch (Exception)
             {
-                return BadRequest(new { mensagem = "Dados inválidos" }); 
+                return BadRequest(new { mensagem = "Dados inválidos" });
             }
         }
 
@@ -75,7 +94,7 @@ namespace RentManagementAPI.Controllers
                              bytes[0] == 0x42 && bytes[1] == 0x4D;
 
                 if (!isPng && !isBmp)
-                    return BadRequest(new { mensagem = "Apenas imagens PNG ou BMP são aceitas." });
+                    throw new Exception();
 
                 var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "cnh_photos");
                 Directory.CreateDirectory(folderPath);

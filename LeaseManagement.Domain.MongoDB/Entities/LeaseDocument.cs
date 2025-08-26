@@ -1,11 +1,10 @@
-﻿using LeaseManagement.Domain.Entities.MongoDB.BaseObject;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.Text.Json.Serialization;
 
 namespace LeaseManagement.Domain.Entities.MongoDB
 {
-    public class LeaseDocument : BaseDocument
+    public class LeaseDocument 
     {
         [BsonElement("identificação"), BsonRepresentation(BsonType.String)]
         public string Identifier { get; set; }

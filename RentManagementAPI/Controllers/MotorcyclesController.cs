@@ -1,11 +1,12 @@
-using Microsoft.AspNetCore.Mvc;
 using LeaseManagement.Domain.Entities;
-using LeaseManagement.Infrastructure.RabbitMQ.Publish;
-using System.Text.Json;
-using LeaseManagementAPI.Validations;
-using LeaseManagement.Infrastructure.MongoDB.Implementation;
 using LeaseManagement.Domain.Entities.MongoDB;
+using LeaseManagement.Domain.MongoDB.Entities;
+using LeaseManagement.Infrastructure.MongoDB.Implementation;
+using LeaseManagement.Infrastructure.RabbitMQ.Publish;
 using LeaseManagementAPI.Mappers;
+using LeaseManagementAPI.Validations;
+using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace RentManagementAPI.Controllers
 {
@@ -27,8 +28,29 @@ namespace RentManagementAPI.Controllers
             {
                 APIValidator.ValidateMotorcycleRegister(motorcycle);
 
-                string json = JsonSerializer.Serialize(motorcycle);
-                GenericPublisher.PublishMessage(json, "motorcycle");
+                MotorcycleDocument motorcycleDocument = _motorcycleImplementation.GetByLicensePlate(motorcycle.LicensePlate);
+                if(motorcycleDocument != null)
+                    throw new Exception();
+
+                
+                _motorcycleImplementation.InsertMotorcycle(MotorcycleMapper.JsonToDocumentMapper(motorcycle));
+                
+                NotificationDocument notificationDocument = new NotificationDocument
+                {
+                    Message = "Moto cadastrada com sucesso!",
+                    LicensePlate = motorcycle.LicensePlate
+                };
+                string json = JsonSerializer.Serialize(notificationDocument);
+
+                GenericPublisher.PublishMessage("Moto cadastrada com sucesso!", "motorcycle");
+
+                if(motorcycle.Year == 2024)
+                {
+                    notificationDocument.Message = "Atenção! Moto do ano de 2024 cadastrada.";
+                    json = JsonSerializer.Serialize(notificationDocument);
+
+                    GenericPublisher.PublishMessage(json, "motorcycle");    
+                }
 
                 return StatusCode(201);
             }

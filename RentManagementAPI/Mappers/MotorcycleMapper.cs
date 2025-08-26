@@ -9,7 +9,7 @@ namespace LeaseManagementAPI.Mappers
         {
             MotorcycleDocument motorcycleDocument = new MotorcycleDocument
             {
-                Id = Guid.NewGuid().ToString(),
+                Identifier = motorcycle.Identifier,
                 Model = motorcycle.Model,
                 Year = motorcycle.Year,
                 LicensePlate = motorcycle.LicensePlate,

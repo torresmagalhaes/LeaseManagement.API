@@ -9,7 +9,6 @@ namespace LeaseManagementAPI.Mappers
         {
             DeliveryManDocument deliveryManDocument = new DeliveryManDocument
             {
-                Id = Guid.NewGuid().ToString(),
                 Identifier = deliveryMan.Identifier,
                 Name = deliveryMan.Name,
                 TaxNumber = deliveryMan.TaxNumber,

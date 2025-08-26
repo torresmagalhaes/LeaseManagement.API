@@ -9,7 +9,7 @@ namespace LeaseManagementAPI.Mappers
         {
             LeaseDocument leaseDocument = new LeaseDocument 
             {
-                Id = Guid.NewGuid().ToString(),
+                Identifier = lease.Identifier,
                 DeliveryManId = lease.DeliveryManId,
                 MotorcycleId = lease.MotorcycleId,
                 StartDate = lease.StartDate,

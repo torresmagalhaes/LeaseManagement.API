@@ -4,13 +4,13 @@ using System.Text;
 
 namespace LeaseManagement.Infrastructure.RabbitMQ.Consume
 {
-    public class MotorcycleMessageConsumer
+    public class NotificationMessageConsumer
     {
         private readonly IConnection _connection;
         private readonly IModel _channel;
         private readonly Action<string> _messageHandler;
 
-        public MotorcycleMessageConsumer(Action<string> messageHandler)
+        public NotificationMessageConsumer(Action<string> messageHandler)
         {
             _messageHandler = messageHandler;
             var factory = new ConnectionFactory { HostName = "localhost" };

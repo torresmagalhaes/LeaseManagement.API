@@ -1,4 +1,5 @@
 using LeaseManagement.Domain.Entities;
+using LeaseManagement.Domain.MongoDB.Entities;
 using LeaseManagement.Infrastructure.MongoDB.Implementation;
 using LeaseManagement.Infrastructure.RabbitMQ.Consume;
 using LeaseManagementAPI.Mappers;
@@ -6,22 +7,21 @@ using System.Text.Json;
 
 namespace RentManagementAPI.Services
 {
-    public class MotorcycleConsumerService : IHostedService
+    public class NotificationConsumerService : IHostedService
     {
-        private readonly MotorcycleMessageConsumer _consumer;
-        private readonly MotorcycleImplementation _motorcycleImplementation;
+        private readonly NotificationMessageConsumer _consumer;
+        private readonly NotificationImplementation _notificationImplementation;
 
-        public MotorcycleConsumerService(MotorcycleImplementation motorcycleImplementation)
+        public NotificationConsumerService(NotificationImplementation notificationImplementation)
         {
-            _motorcycleImplementation = motorcycleImplementation;
-            _consumer = new MotorcycleMessageConsumer(HandleMessage);
+            _notificationImplementation = notificationImplementation;
+            _consumer = new NotificationMessageConsumer(HandleMessage);
         }
 
         private void HandleMessage(string message)
         {
-            var motorcycle = JsonSerializer.Deserialize<Motorcycle>(message);
-            var motorcycleDocument = MotorcycleMapper.JsonToDocumentMapper(motorcycle);
-            _motorcycleImplementation.InsertMotorcycle(motorcycleDocument);
+            var notificationDocument = JsonSerializer.Deserialize<NotificationDocument>(message);
+            _notificationImplementation.InsertNotification(notificationDocument);
         }
 
         public Task StartAsync(CancellationToken cancellationToken)

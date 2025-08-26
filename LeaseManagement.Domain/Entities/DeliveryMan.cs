@@ -21,6 +21,6 @@ namespace LeaseManagement.Domain.Entities
         public string CNHType { get; set; }
 
         [JsonPropertyName("imagem_cnh")]
-        public Base64StringAttribute? CNHPhoto { get; set; }
+        public string CNHPhoto { get; set; }
     }
 }

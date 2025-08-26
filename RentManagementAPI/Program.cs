@@ -7,7 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Registrar serviços
 builder.Services.AddSingleton<MongoDBService>();
 builder.Services.AddSingleton<MotorcycleImplementation>();
-builder.Services.AddHostedService<MotorcycleConsumerService>();
+builder.Services.AddSingleton<LeaseImplementation>();
+builder.Services.AddSingleton<DeliveryManImplementation>();
+builder.Services.AddHostedService<NotificationConsumerService>();
 
 // Add services to the container.
 builder.Services.AddControllers();
