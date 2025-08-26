@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using LeaseManagement.Domain.Entities;
+﻿using LeaseManagement.Domain.Entities;
+using LeaseManagement.Domain.Entities.MongoDB;
+using LeaseManagement.Infrastructure.MongoDB.Data;
+using LeaseManagement.Infrastructure.MongoDB.Implementation;
+using LeaseManagementAPI.Mappers;
 using LeaseManagementAPI.Validations;
 using Microsoft.AspNetCore.Components.Forms;
-using LeaseManagement.Infrastructure.MongoDB.Data;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
-using LeaseManagement.Domain.Entities.MongoDB;
-using LeaseManagementAPI.Mappers;
-using LeaseManagement.Infrastructure.MongoDB.Implementation;
 
 namespace RentManagementAPI.Controllers
 {
@@ -15,9 +16,12 @@ namespace RentManagementAPI.Controllers
     public class DeliveryManController : ControllerBase
     {
         private readonly DeliveryManImplementation _deliveryManImplementation;
-        public DeliveryManController(DeliveryManImplementation deliveryManImplementation)
+        private readonly IConfiguration _configuration;
+
+        public DeliveryManController(DeliveryManImplementation deliveryManImplementation, IConfiguration configuration)
         {
             _deliveryManImplementation = deliveryManImplementation;
+            _configuration = configuration;
         }
 
         [HttpPost]
@@ -43,7 +47,11 @@ namespace RentManagementAPI.Controllers
                             throw new Exception();
 
                         var extension = isJpg ? "jpg" : "bmp";
-                        var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "cnh_photos");
+                        string path = _configuration["AppSettings:CNHPhotoPath"];
+
+                        var folderPath = Path.Combine(path, "cnh_photos");
+
+                        //var folderPath = Path.Combine(Directory.GetCurrentDirectory(), path, "cnh_photos");
 
                         if (!Directory.Exists(folderPath))
                             Directory.CreateDirectory(folderPath);
@@ -72,7 +80,7 @@ namespace RentManagementAPI.Controllers
             }
         }
 
-        [HttpPost("/{id}/cnh")]
+        [HttpPost("{id}/cnh")]
         public IActionResult UpdateCNHPhoto(string id, [FromBody] CNHPhotoRequest request)
         {
             try
@@ -96,7 +104,9 @@ namespace RentManagementAPI.Controllers
                 if (!isPng && !isBmp)
                     throw new Exception();
 
-                var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "cnh_photos");
+                string path = _configuration["AppSettings:CNHPhotoPath"];
+
+                var folderPath = Path.Combine(path, "cnh_photos");
                 Directory.CreateDirectory(folderPath);
 
                 var extension = isPng ? "png" : "bmp";

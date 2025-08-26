@@ -42,7 +42,7 @@ namespace RentManagementAPI.Controllers
                 };
                 string json = JsonSerializer.Serialize(notificationDocument);
 
-                GenericPublisher.PublishMessage("Moto cadastrada com sucesso!", "motorcycle");
+                GenericPublisher.PublishMessage(json, "motorcycle");
 
                 if(motorcycle.Year == 2024)
                 {

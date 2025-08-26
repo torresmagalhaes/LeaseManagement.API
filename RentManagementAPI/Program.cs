@@ -9,6 +9,7 @@ builder.Services.AddSingleton<MongoDBService>();
 builder.Services.AddSingleton<MotorcycleImplementation>();
 builder.Services.AddSingleton<LeaseImplementation>();
 builder.Services.AddSingleton<DeliveryManImplementation>();
+builder.Services.AddSingleton<NotificationImplementation>();
 builder.Services.AddHostedService<NotificationConsumerService>();
 
 // Add services to the container.
