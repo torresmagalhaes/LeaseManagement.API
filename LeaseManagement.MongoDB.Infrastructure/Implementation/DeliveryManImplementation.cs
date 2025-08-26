@@ -22,5 +22,11 @@ namespace LeaseManagement.Infrastructure.MongoDB.Implementation
         {
             return _deliveryManCollection.Find(x => x.Identifier == identifier).FirstOrDefault();
         }
+
+        public void UpdateEndDate(string id, DateTime devolutionDay)
+        {
+            var update = Builders<LeaseDocument>.Update.Set(x => x.EndDate, devolutionDay);
+            _motorcycleCollection.UpdateOne(x => x.Identifier == id, update);
+        }
     }
 }

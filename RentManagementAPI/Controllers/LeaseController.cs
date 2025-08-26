@@ -13,11 +13,15 @@ namespace RentManagementAPI.Controllers
     {
         private readonly LeaseImplementation _leaseImplementation;
         private readonly DeliveryManImplementation _deliveryManImplementation;
+        private readonly MotorcycleImplementation _motorcycleImplementation;
+        private readonly ILogger<LeaseController> _logger;
 
-        public LeaseController(LeaseImplementation leaseImplementation, DeliveryManImplementation deliveryManImplementation)
+        public LeaseController(LeaseImplementation leaseImplementation, DeliveryManImplementation deliveryManImplementation, MotorcycleImplementation motorcycleImplementation, ILogger<LeaseController> logger )
         {
             _leaseImplementation = leaseImplementation;
             _deliveryManImplementation = deliveryManImplementation;
+            _motorcycleImplementation = motorcycleImplementation;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -28,16 +32,16 @@ namespace RentManagementAPI.Controllers
                 if (lease == null)
                     throw new Exception();
 
-                DeliveryManDocument deliveryMan = _deliveryManImplementation.GetByIdentifier(lease.DeliveryManId);
-                APIValidator.ValidateLease(lease, deliveryMan.CNHType);
+                APIValidator.ValidateLease(lease, _deliveryManImplementation, _motorcycleImplementation, _leaseImplementation);
 
                 var leaseDocument = LeaseMapper.JsonToDocumentMapper(lease);
                 _leaseImplementation.InsertLease(leaseDocument);
 
                 return StatusCode(201);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError($"{ex.Message} in Create");
                 return BadRequest(new { mensagem = "Dados inválidos" });
             }
         }
@@ -92,10 +96,12 @@ namespace RentManagementAPI.Controllers
                     totalValue = selectedPlan * dailyFee;
                 }
 
-                return Ok(new { mensagem = "Data de devolução informada com sucesso", valor_total = totalValue });
+                _deliveryManImplementation.UpdateEndDate(id, request.DevolutionDay);
+                return Ok(new { data_devolucao = request.DevolutionDay, valor_total = totalValue });
             }
-            catch
+            catch (Exception ex)
             {
+                _logger.LogError($"{ex.Message} in EndLease");
                 return BadRequest(new { mensagem = "Dados inválidos" });
             }
         }
@@ -116,8 +122,9 @@ namespace RentManagementAPI.Controllers
                 Lease lease = LeaseMapper.DocumentToJsonMapper(leaseDoc);
                 return Ok(lease);
             }
-            catch
+            catch (Exception ex)
             {
+                _logger.LogError($"{ex.Message} in GetLeaseById");
                 return BadRequest(new { mensagem = "Dados inválidos" });
             }
         }

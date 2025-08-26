@@ -17,11 +17,13 @@ namespace RentManagementAPI.Controllers
     {
         private readonly DeliveryManImplementation _deliveryManImplementation;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<DeliveryManController> _logger;
 
-        public DeliveryManController(DeliveryManImplementation deliveryManImplementation, IConfiguration configuration)
+        public DeliveryManController(DeliveryManImplementation deliveryManImplementation, IConfiguration configuration, ILogger<DeliveryManController> logger)
         {
             _deliveryManImplementation = deliveryManImplementation;
             _configuration = configuration;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -44,14 +46,12 @@ namespace RentManagementAPI.Controllers
                                      bytes[0] == 0x42 && bytes[1] == 0x4D;
 
                         if (!isJpg && !isBmp)
-                            throw new Exception();
+                            throw new Exception("Apenas arquivos .jpg ou .bmp são aceitos");
 
                         var extension = isJpg ? "jpg" : "bmp";
                         string path = _configuration["AppSettings:CNHPhotoPath"];
 
                         var folderPath = Path.Combine(path, "cnh_photos");
-
-                        //var folderPath = Path.Combine(Directory.GetCurrentDirectory(), path, "cnh_photos");
 
                         if (!Directory.Exists(folderPath))
                             Directory.CreateDirectory(folderPath);
@@ -74,8 +74,9 @@ namespace RentManagementAPI.Controllers
 
                 return StatusCode(201);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError($"{ex.Message} in RegisterDeliveryMan"); 
                 return BadRequest(new { mensagem = "Dados inválidos" });
             }
         }
@@ -102,12 +103,19 @@ namespace RentManagementAPI.Controllers
                              bytes[0] == 0x42 && bytes[1] == 0x4D;
 
                 if (!isPng && !isBmp)
-                    throw new Exception();
+                    throw new Exception("Apenas arquivos .jpg ou .bmp são aceitos");
 
                 string path = _configuration["AppSettings:CNHPhotoPath"];
 
                 var folderPath = Path.Combine(path, "cnh_photos");
                 Directory.CreateDirectory(folderPath);
+
+                foreach (var ext in new[] { "png", "bmp" })
+                {
+                    var oldFile = Path.Combine(folderPath, $"{id}_cnh.{ext}");
+                    if (System.IO.File.Exists(oldFile))
+                        System.IO.File.Delete(oldFile);
+                }
 
                 var extension = isPng ? "png" : "bmp";
                 var filePath = Path.Combine(folderPath, $"{id}_cnh.{extension}");
@@ -119,8 +127,9 @@ namespace RentManagementAPI.Controllers
 
                 return StatusCode(201);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError($"{ex.Message} in UpdateCNHPhoto");
                 return BadRequest(new { mensagem = "Dados inválidos" });
             }
         }

@@ -1,7 +1,6 @@
 ﻿using LeaseManagement.Domain.Entities;
-using Microsoft.OpenApi.Any;
-using System.Collections.Generic;
-using System.Linq;
+using LeaseManagement.Domain.Entities.MongoDB;
+using LeaseManagement.Infrastructure.MongoDB.Implementation;
 
 namespace LeaseManagementAPI.Validations
 {
@@ -23,21 +22,16 @@ namespace LeaseManagementAPI.Validations
                 string.IsNullOrWhiteSpace(deliveryMan.TaxNumber))
                 throw new Exception();
 
-            bool validCNH = ValidateCNHType(deliveryMan.CNHType);
-
-            if (!validCNH)
-                throw new Exception();
+            ValidateCNHType(deliveryMan.CNHType);
         }
 
-        public static bool ValidateCNHType(string CNHType)
+        public static void ValidateCNHType(string CNHType)
         {
             List<char> cnhTypesList = string.IsNullOrWhiteSpace(CNHType)
                 ? new List<char>()
                 : CNHType.ToCharArray().ToList();
             if (cnhTypesList == null || !cnhTypesList.Contains('A'))
-                return false;
-
-            return true;
+                throw new Exception($"Entregador {CNHType} não possui CNH tipo A");
         }
 
         #region Lease validations
@@ -50,50 +44,45 @@ namespace LeaseManagementAPI.Validations
             { 50, 18.00m }
         };
 
-        public static void ValidateLease(Lease lease, string CNHType)
+        public static void ValidateLease(Lease lease, DeliveryManImplementation deliveryManImplementation, MotorcycleImplementation motorcycleImplementation, LeaseImplementation leaseImplementation)
         {
-            if (lease == null)
-                throw new Exception();
+            if (lease == null) throw new Exception("Payload fornecido inválido");
 
-            bool validCNH = ValidateCNHType(CNHType);
+            DeliveryManDocument deliveryMan = deliveryManImplementation.GetByIdentifier(lease.DeliveryManId);
 
-            if (!validCNH)
-                throw new Exception();
+            if (deliveryMan == null) throw new Exception($"Entregador {lease.DeliveryManId} não encontrado");
 
-            // Validar campos obrigatórios
-            if (string.IsNullOrWhiteSpace(lease.DeliveryManId) ||
-                string.IsNullOrWhiteSpace(lease.MotorcycleId))
-                throw new Exception();
+            ValidateCNHType(deliveryMan.CNHType);
 
-            // Validar datas
+            MotorcycleDocument motorcycle = motorcycleImplementation.GetById(lease.MotorcycleId);   
+            if (motorcycle == null) 
+                throw new Exception($"Não há moto com Id {lease.MotorcycleId} registrada em nosso sistema");
+
+            LeaseDocument leaseDocument = leaseImplementation.GetByMotorcycleId(motorcycle.Identifier);
             var tomorrow = DateTime.Today.AddDays(1);
 
-            // Data de início deve ser amanhã
-            if (lease.StartDate.Date != tomorrow)
-                throw new Exception();
+            if (leaseDocument != null && leaseDocument.EndDate.Date >= tomorrow)
+                throw new Exception($"Moto {motorcycle.Identifier} já está alugada até {leaseDocument.EndDate.Date.ToShortDateString()}");
 
-            // Data de término e previsão devem ser posteriores ao início
+            if (lease.StartDate.Date != tomorrow)
+                throw new Exception("Data de início deve ser amanhã");
+
             if (lease.EndDate <= lease.StartDate ||
                 lease.ExpectedEndDate <= lease.StartDate)
-                throw new Exception();
+                throw new Exception("Data de término e previsão devem ser posteriores ao início");
 
-            // Validar plano (quantidade de dias)
             var days = (lease.EndDate - lease.StartDate).Days;
-            if (!PlanPrices.ContainsKey(days))
-                throw new Exception();
+            if (!PlanPrices.ContainsKey(days)) throw new Exception("Plano fornecido invalido");
 
-            // A data de previsão de término deve ser igual ou posterior à data de término
-            if (lease.ExpectedEndDate < lease.EndDate)
-                throw new Exception();
+            if (lease.ExpectedEndDate < lease.EndDate) 
+                throw new Exception("A data de previsão de término deve ser igual ou posterior à data de término");
 
-            // O plano (número de dias) deve corresponder a um dos planos válidos
             if (lease.Plan != 7 && lease.Plan != 15 && lease.Plan != 30 &&
                 lease.Plan != 45 && lease.Plan != 50)
-                throw new Exception();
+                throw new Exception("Plano fornecido invalido");
 
-            // Validar se o número de dias do plano corresponde ao período entre início e fim
-            if (lease.Plan != days)
-                throw new Exception();
+            if (lease.Plan != days) 
+                throw new Exception("Número de dias do plano não corresponde ao período entre início e fim");
         }
         #endregion
     }

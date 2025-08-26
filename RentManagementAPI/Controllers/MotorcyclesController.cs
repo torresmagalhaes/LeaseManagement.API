@@ -15,10 +15,12 @@ namespace RentManagementAPI.Controllers
     public class MotorcyclesController : ControllerBase
     {
         private readonly MotorcycleImplementation _motorcycleImplementation;
+        private readonly ILogger<MotorcyclesController> _logger;
 
-        public MotorcyclesController(MotorcycleImplementation motorcycleImplementation)
+        public MotorcyclesController(MotorcycleImplementation motorcycleImplementation, ILogger<MotorcyclesController> logger)
         {
             _motorcycleImplementation = motorcycleImplementation;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -54,14 +56,15 @@ namespace RentManagementAPI.Controllers
 
                 return StatusCode(201);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError($"{ex.Message} in RegisterMotorcycle");
                 return BadRequest(new { mensagem = "Dados inválidos" });
             }
         }
 
         [HttpGet]
-        public IActionResult GetMotorcycles([FromQuery] string licensePlate)
+        public IActionResult GetMotorcycleByLicensePlate([FromQuery] string licensePlate)
         {
             try
             {
@@ -70,8 +73,9 @@ namespace RentManagementAPI.Controllers
 
                 return Ok(motorcycle);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError($"{ex.Message} in GetMotorcycleByLicensePlate");
                 return BadRequest(new { mensagem = "Dados inválidos" });
             }
         }
@@ -93,8 +97,9 @@ namespace RentManagementAPI.Controllers
 
                 return Ok(new { mensagem = "Placa modificada com sucesso" });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError($"{ex.Message} in UpdateLicensePlate");
                 return BadRequest(new { mensagem = "Dados inválidos" });
             }
         }
@@ -115,8 +120,9 @@ namespace RentManagementAPI.Controllers
                 Motorcycle motorcycle = MotorcycleMapper.DocumentToJsonMapper(motorcycleDoc);
                 return Ok(motorcycle);
             }
-            catch
+            catch (Exception ex)
             {
+                _logger.LogError($"{ex.Message} in GetMotorcycleById");
                 return BadRequest(new { mensagem = "Request mal formatada" });
             }
         }
@@ -134,8 +140,9 @@ namespace RentManagementAPI.Controllers
 
                 return Ok(new { mensagem = "Moto removida com sucesso" });
             }
-            catch
+            catch (Exception ex)
             {
+                _logger.LogError($"{ex.Message} in DeleteMotorcycle");
                 return BadRequest(new { mensagem = "Dados inválidos" });
             }
         }
