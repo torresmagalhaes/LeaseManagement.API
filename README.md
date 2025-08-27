@@ -11,6 +11,7 @@ API para gestão de aluguel de motos, com cadastro de motos, entregadores, loca�
 - **Docker** e **Docker Compose**
 - **NUnit** (testes automatizados)
 - **OpenAPI/Scalar** (documentação automática)
+- **Serilog** (salvamento de logs)
 
 ## Como Executar o Projeto
 
