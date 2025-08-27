@@ -16,7 +16,7 @@ API para gestão de aluguel de motos, com cadastro de motos, entregadores, loca�
 
 ### Pré-requisitos
 
-- [.NET 8 SDK]((https://dotnet.microsoft.com/en-us/download/dotnet/8.0))
+- [.NET 8 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
 - [Docker](https://www.docker.com/)
 - [Docker Compose](https://docs.docker.com/compose/)
 
