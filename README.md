@@ -16,7 +16,7 @@ API para gestão de aluguel de motos, com cadastro de motos, entregadores, loca�
 
 ### Pré-requisitos
 
-- [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
+- [.NET 8 SDK]((https://dotnet.microsoft.com/en-us/download/dotnet/8.0))
 - [Docker](https://www.docker.com/)
 - [Docker Compose](https://docs.docker.com/compose/)
 
@@ -36,7 +36,7 @@ Obs.: por padrão o appsettings.development está para localhost, antes de utili
     docker compose up --build
     ```
 
-3. Acesse a API em [http://localhost:5000](http://localhost:5000).
+3. Acesse a API em [https://localhost:8081](https://localhost:8081).
 
 ## Principais Funcionalidades
 
