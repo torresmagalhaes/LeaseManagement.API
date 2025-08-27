@@ -1,6 +1,7 @@
 using LeaseManagement.Infrastructure.MongoDB.Data;
 using LeaseManagement.Infrastructure.MongoDB.Implementation;
 using RentManagementAPI.Services;
+using Scalar.AspNetCore;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,6 +35,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.MapScalarApiReference(options =>
+{
+    options
+        .WithTitle("Lease Management API")
+        .WithOpenApiRoutePattern("/swagger/v1/swagger.json"); // <-- rota do swagger.json
+});
 
 app.UseHttpsRedirection();
 

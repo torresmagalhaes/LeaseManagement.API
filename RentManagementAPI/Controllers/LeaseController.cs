@@ -46,6 +46,10 @@ namespace RentManagementAPI.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Obtém uma tarefa específica pelo seu ID.
+        /// </summary>
         [HttpPut("{id}/devolucao")]
         public IActionResult EndLease(string id, [FromBody] LeaseReturn request)
         {
