@@ -9,9 +9,8 @@ API para gestão de aluguel de motos, com cadastro de motos, entregadores, loca�
 - **RabbitMQ** (mensageria)
 - **MongoDB** (banco de dados relacional)
 - **Docker** e **Docker Compose**
-- **NUnit** (testes automatizados)
 - **OpenAPI/Scalar** (documentação automática)
-- **Serilog** (salvamento de logs)
+- **Serilog** (Observabilidade)
 
 ## Como Executar o Projeto
 
